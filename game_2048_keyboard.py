@@ -26,11 +26,12 @@ def main_window(user_theme):
         [buttons[1][0], buttons[1][1], buttons[1][2], buttons[1][3]],
         [buttons[2][0], buttons[2][1], buttons[2][2], buttons[2][3]],
         [buttons[3][0], buttons[3][1], buttons[3][2], buttons[3][3]],
-        [sg.Button('\u21C7', font="Arial 22", pad=((40, 5), (0, 0)), key="-LEFT-"),
-         sg.Button('\u21C8', font="Arial 22", key="-UP-"),
-         sg.Button('\u21CA', font="Arial 22", key="-DOWN-"),
-         sg.Button('\u21C9', font="Arial 22", key="-RIGHT-")],
-        [sg.Button("New Game", size=11, pad=((40, 10), (0, 0))), sg.Button("Exit", size=11)],
+        [sg.Button('\u21C7 A', font="Arial 22", size=(3, 1), pad=((22, 5), (15, 0)), key="-LEFT-"),
+         sg.Button('\u21C8 W', font="Arial 22", size=(3, 1), pad=((5, 5), (15, 0)), key="-UP-"),
+         sg.Button('\u21CA S', font="Arial 22", size=(3, 1), pad=((5, 5), (15, 0)), key="-DOWN-"),
+         sg.Button('\u21C9 D', font="Arial 22", size=(3, 1), pad=((5, 5), (15, 0)), key="-RIGHT-")],
+        [sg.Button("New Game", size=18, pad=((10, 5), (35, 0))),
+         sg.Button("Exit", size=18, pad=((5, 10), (35, 0)))],
         [sg.Text("", size=(20, 1), key="-GAMEOVER-", text_color="red", font="Any 15")],
     ]
 
@@ -51,7 +52,7 @@ def display_game_over(window):
 
 def on_key(event):
     global key_press
-    key_press = event.name
+    key_press = event.name.lower()
 
 def out_key(event):
     pass
@@ -61,7 +62,6 @@ if __name__ == '__main__':
     mat = start_game()
     user_theme = "DarkAmber"
     window = main_window(user_theme)
-#    global key_press
 
     while True:
         key_press = ""
@@ -75,6 +75,9 @@ if __name__ == '__main__':
         if event == sg.WIN_CLOSED or event == "Exit":
             break
         elif event == "-UP-" or key_press == "w":
+            # if key_press == "w":
+            #     current_color = window["-UP-"][2]
+            #     window["-UP-"].update(button_color="black")
             if move_up(mat):
                 add_new_2(mat)
         elif event == "-DOWN-" or key_press == "s":
