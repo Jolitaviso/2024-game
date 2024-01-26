@@ -52,9 +52,6 @@ def update_buttons(window, mat):
                 window[button_key].update("", button_color="grey")
             else:
                 window[button_key].update(value, button_color=button_color)
-            # window[button_key].update(value if value == 0:
-            #                           button_color=button_color
-            #                            else: button_color=button_color)
 
 def display_game_over(window):
     window["-GAMEOVER-"].update("Game Over!")
@@ -62,6 +59,7 @@ def display_game_over(window):
 def on_key(event):
     global key_press
     key_press = event.name.lower()
+    if key_press in ("w", "a", "s", "d"):
 
 def out_key(event):
     pass
@@ -78,15 +76,16 @@ if __name__ == '__main__':
         while key_press == "" and event == 0:
             event, values = window.read(500)
             kb.on_press(on_key)
-        if key_press != "":
+        # if key_press.lower() in ("w", "a", "s", "d"):
+        #     window[key_press.lower()].update(button_color = ('red','yellow'))
+        # if key_press != "":
             kb.on_release_key(key_press, out_key)
 
         if event == sg.WIN_CLOSED or event == "Exit":
             break
         elif event == "-UP-" or key_press == "w":
-            # if key_press == "w":
-            #     current_color = window["-UP-"][2]
-            #     window["-UP-"].update(button_color="black")
+            button_color_old = window["-UP-"].ButtonColor
+            window["-UP-"].update(button_color = (button_color_old[1],'black'))
             if move_up(mat):
                 add_new_2(mat)
         elif event == "-DOWN-" or key_press == "s":
