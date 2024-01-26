@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import keyboard as kb
+import gui_2048
 from logic_colored import start_game, move_up, move_down, move_left, move_right, get_current_state, add_new_2
 
 # Define a mapping of values to colors
@@ -33,6 +34,8 @@ def main_window(user_theme):
         [sg.Button("New Game", size=18, pad=((10, 5), (35, 0))),
          sg.Button("Exit", size=18, pad=((5, 10), (35, 0)))],
         [sg.Text("", size=(20, 1), key="-GAMEOVER-", text_color="red", font="Any 15")],
+        [sg.Button("Change Theme", size=18, pad=((100,0), (5,0)))],
+        [sg.Button("The game creator's", size=18, pad=((100,0), (10,20)))]
     ]
 
     window = sg.Window("2048", layout)
@@ -45,7 +48,13 @@ def update_buttons(window, mat):
             button_key = (i, j)
             value = mat[i][j]
             button_color = VALUE_COLOR_MAP.get(value, "grey")
-            window[button_key].update(value if value != 0 else '', button_color=button_color)
+            if value == 0:
+                window[button_key].update("", button_color="grey")
+            else:
+                window[button_key].update(value, button_color=button_color)
+            # window[button_key].update(value if value == 0:
+            #                           button_color=button_color
+            #                            else: button_color=button_color)
 
 def display_game_over(window):
     window["-GAMEOVER-"].update("Game Over!")
@@ -92,6 +101,15 @@ if __name__ == '__main__':
         elif event == "New Game":
             mat = start_game()
             window["-GAMEOVER-"].update("")
+        elif event == "The game creator's":
+            gui_2048.titles(user_theme)
+        elif event == "Change Theme":
+            user_theme = gui_2048.theme_select(user_theme)
+            window.close()
+            sg.theme(user_theme)
+            window = main_window(user_theme)
+            continue
+        
         update_buttons(window, mat)
 
         if get_current_state(mat) == 'LOST':
