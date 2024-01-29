@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import keyboard as kb
+import time
 import gui_2048
 from logic_colored import start_game, move_up, move_down, move_left, move_right, get_current_state, add_new_2
 
@@ -33,8 +34,8 @@ def main_window(user_theme):
          sg.Button('\u21C9 D', font="Arial 22", size=(3, 1), pad=((5, 5), (15, 0)), key="-RIGHT-")],
         [sg.Button("New Game", size=18, pad=((10, 5), (35, 0))),
          sg.Button("Exit", size=18, pad=((5, 10), (35, 0)))],
-        [sg.Text("", size=(20, 1), key="-GAMEOVER-", text_color="red", font="Any 15")],
-        [sg.Button("Change Theme", size=18, pad=((100,0), (5,0)))],
+        [sg.Text("", size=(18, 1), key="-GAMEOVER-", pad=((100,0), (20,0)), text_color="red", font="Any 15")],
+        [sg.Button("Change Theme", size=18, pad=((100,0), (20,0)))],
         [sg.Button("The game creator's", size=18, pad=((100,0), (10,20)))]
     ]
 
@@ -52,19 +53,18 @@ def update_buttons(window, mat):
                 window[button_key].update("", button_color="grey")
             else:
                 window[button_key].update(value, button_color=button_color)
-            # window[button_key].update(value if value == 0:
-            #                           button_color=button_color
-            #                            else: button_color=button_color)
-
-def display_game_over(window):
-    window["-GAMEOVER-"].update("Game Over!")
 
 def on_key(event):
     global key_press
     key_press = event.name.lower()
 
-def out_key(event):
-    pass
+def flashing_button(window, window_button):
+    current_button_color = window_button.ButtonColor
+    window_button.update(button_color = (current_button_color[1], current_button_color[0]))
+    window.refresh()
+    time.sleep(0.1)
+    window_button.update(button_color = (current_button_color[0], current_button_color[1]))
+    return window
 
 
 if __name__ == '__main__':
@@ -78,24 +78,23 @@ if __name__ == '__main__':
         while key_press == "" and event == 0:
             event, values = window.read(500)
             kb.on_press(on_key)
-        if key_press != "":
-            kb.on_release_key(key_press, out_key)
 
         if event == sg.WIN_CLOSED or event == "Exit":
             break
-        elif event == "-UP-" or key_press == "w":
-            # if key_press == "w":
-            #     current_color = window["-UP-"][2]
-            #     window["-UP-"].update(button_color="black")
+        elif event == "-UP-" or key_press == "w" or key_press == "up":
+            window = flashing_button(window, window["-UP-"])
             if move_up(mat):
                 add_new_2(mat)
-        elif event == "-DOWN-" or key_press == "s":
+        elif event == "-DOWN-" or key_press == "s" or key_press == "down":
+            window = flashing_button(window, window["-DOWN-"])
             if move_down(mat):
                 add_new_2(mat)
-        elif event == "-LEFT-" or key_press == "a":
+        elif event == "-LEFT-" or key_press == "a" or key_press == "left":
+            window = flashing_button(window, window["-LEFT-"])
             if move_left(mat):
                 add_new_2(mat)
-        elif event == "-RIGHT-" or key_press == "d":
+        elif event == "-RIGHT-" or key_press == "d" or key_press == "right":
+            window = flashing_button(window, window["-RIGHT-"])
             if move_right(mat):
                 add_new_2(mat)
         elif event == "New Game":
@@ -113,6 +112,7 @@ if __name__ == '__main__':
         update_buttons(window, mat)
 
         if get_current_state(mat) == 'LOST':
-            display_game_over(window)
+            window["-GAMEOVER-"].update("  Game Over!")
+            window.refresh()
 
     window.close()
